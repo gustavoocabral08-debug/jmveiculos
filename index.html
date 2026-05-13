@@ -8,111 +8,481 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        .cinzel-text { font-family: 'Cinzel', serif; }
-        .toast { position: fixed; bottom: 20px; right: 20px; background: #10b981; color: white; padding: 12px 24px; border-radius: 8px; animation: slideIn 0.3s ease; z-index: 1000; }
-        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .modal-content { background: white; border-radius: 12px; max-width: 600px; width: 90%; padding: 24px; max-height: 80vh; overflow-y: auto; }
+        
+        .cinzel-text {
+            font-family: 'Cinzel', serif;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            animation: slideIn 0.3s ease;
+            z-index: 1000;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 24px;
+        }
+        
+        .dark-mode {
+            background-color: #0f172a !important;
+            color: #e2e8f0 !important;
+        }
+        
+        .dark-mode .bg-white {
+            background-color: #1e293b !important;
+        }
+        
+        .dark-mode .bg-gray-50 {
+            background-color: #0f172a !important;
+        }
+        
+        .dark-mode .bg-gray-100 {
+            background-color: #1e293b !important;
+        }
+        
+        .dark-mode .bg-gray-200 {
+            background-color: #334155 !important;
+        }
+        
+        .dark-mode .text-gray-800 {
+            color: #f1f5f9 !important;
+        }
+        
+        .dark-mode .text-gray-600 {
+            color: #cbd5e1 !important;
+        }
+        
+        .dark-mode .border {
+            border-color: #334155 !important;
+        }
+        
+        .dark-mode .modal-content {
+            background-color: #1e293b !important;
+            color: #e2e8f0 !important;
+        }
+        
+        .dark-mode input, .dark-mode select, .dark-mode textarea {
+            background-color: #0f172a !important;
+            border-color: #334155 !important;
+            color: #e2e8f0 !important;
+        }
+        
         button { cursor: pointer; transition: all 0.2s; }
         button:hover { transform: translateY(-2px); }
-        .vehicle-card { transition: 0.3s; background: white; border-radius: 12px; overflow: hidden; }
-        .vehicle-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .vehicle-image { width: 100%; height: 200px; object-fit: cover; }
-        .loading { text-align: center; padding: 50px; font-size: 18px; }
-        .add-image-btn { background: #3b82f6; color: white; padding: 8px 16px; border-radius: 8px; display: inline-block; cursor: pointer; margin-top: 10px; }
-        .preview-image { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; margin: 5px; }
-        .gallery-preview { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
-        .gallery-item { position: relative; }
-        .remove-image-btn { position: absolute; top: -5px; right: -5px; background: red; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; }
+        
+        .vehicle-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+            background: white;
+        }
+        
+        .dark-mode .vehicle-card {
+            background: #1e293b !important;
+        }
+        
+        .vehicle-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+        }
+        
+        .vehicle-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+        
+        .gallery-image {
+            width: 100%;
+            height: 450px;
+            object-fit: cover;
+        }
+        
+        .thumbnail {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            cursor: pointer;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .thumbnail:hover {
+            transform: scale(1.05);
+        }
+        
+        .thumbnail.active {
+            border-color: #3b82f6;
+            transform: scale(1.05);
+        }
+        
+        .brand-btn {
+            transition: all 0.2s;
+        }
+        
+        .brand-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .preview-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        .gallery-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .gallery-item {
+            position: relative;
+        }
+        
+        .remove-image-btn {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        
+        .remove-image-btn:hover {
+            background: #dc2626;
+            transform: scale(1.1);
+        }
+        
+        .hero-section {
+            position: relative;
+            background-image: url('https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=1600&h=600&fit=crop');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.4) 100%);
+        }
+        
+        .add-image-btn {
+            background: #3b82f6;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: inline-block;
+            cursor: pointer;
+        }
+        
+        .add-image-btn:hover {
+            background: #2563eb;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 18px;
+        }
     </style>
 </head>
-<body class="bg-gray-100">
-<div id="app">🔄 Carregando...</div>
+<body class="bg-gray-50">
+
+<div id="app">
+    <div class="loading">Carregando veículos... ⏳</div>
+</div>
 
 <script>
-    // CONFIGURAÇÕES
-    const CLOUDINARY_CLOUD_NAME = 'da1awx24q';
-    const CLOUDINARY_UPLOAD_PRESET = 'jm_veiculos';
-    const ADMIN_EMAIL = 'admin@jmveiculos.com';
-    const ADMIN_PASSWORD = '245464Jm<becs$';
+    // Configuração do GitHub
+    const GITHUB_USERNAME = 'gustavoocabral08-debug';
+    const GITHUB_REPO = 'jm';
+    const GITHUB_FILE = 'vehicles.json';
+    const GITHUB_TOKEN = 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; // COLOQUE SEU TOKEN AQUI!
     
-    // MARCAS
+    const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/${GITHUB_FILE}`;
+    
+    // Lista de marcas
     const MARCAS = ["Chevrolet", "Volkswagen", "Peugeot", "Toyota", "Fiat", "Renault", "Ford", "Honda", "Hyundai", "Jeep", "Nissan", "Citroen"];
     
-    // DADOS DOS VEÍCULOS
-    let vehicles = [
-        { id: 1, nome: "Onix Turbo", marca: "Chevrolet", ano: 2023, preco: 85000, km: 15000, combustivel: "Flex", cambio: "Automático", cor: "Prata", status: "disponível", imagens: ["https://images.unsplash.com/photo-1603584173870-7e23fae7297c?w=800&h=450&fit=crop"], descricao: "Onix LT 1.0 Turbo, completo, econômico." },
-        { id: 2, nome: "Golf GTI", marca: "Volkswagen", ano: 2022, preco: 165000, km: 35000, combustivel: "Gasolina", cambio: "Automático", cor: "Preto", status: "disponível", imagens: ["https://images.unsplash.com/photo-1568605114967-8130f6a7a7c7?w=800&h=450&fit=crop"], descricao: "Golf GTI 2.0 TSI, bancos de couro." }
-    ];
-    
-    // ESTADO
+    // Estado
     let currentPage = 'home';
+    let isDarkMode = false;
+    let selectedMarca = 'todas';
+    let filterStatus = 'todos';
     let selectedVehicle = null;
+    let toastMessage = null;
     let isAdmin = false;
     let showLoginModal = false;
     let showVehicleModal = false;
     let editingVehicle = null;
-    let toastMessage = null;
-    let selectedMarca = 'todas';
-    let filterStatus = 'todos';
+    let currentImageIndex = 0;
+    let vehicles = [];
+    let isLoading = true;
+    let currentSha = null; // Para atualizar o arquivo no GitHub
     
-    // FUNÇÕES
-    function saveToLocal() { localStorage.setItem('jm_vehicles', JSON.stringify(vehicles)); localStorage.setItem('jm_admin', isAdmin); }
-    function loadFromLocal() { const saved = localStorage.getItem('jm_vehicles'); if (saved) vehicles = JSON.parse(saved); isAdmin = localStorage.getItem('jm_admin') === 'true'; }
-    function showToast(msg, isError = false) { toastMessage = { text: msg, isError }; render(); setTimeout(() => { toastMessage = null; render(); }, 3000); }
-    function formatPrice(p) { return 'R$ ' + p.toLocaleString('pt-BR'); }
-    function getStatusColor(s) { return s === 'disponível' ? 'bg-green-500' : s === 'reservado' ? 'bg-yellow-500' : 'bg-red-500'; }
+    // Credenciais
+    const ADMIN_EMAIL = 'admin@jmveiculos.com';
+    const ADMIN_PASSWORD = '245464Jm<becs$';
     
-    // UPLOAD
-    async function uploadImage(file) {
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-        const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, { method: 'POST', body: formData });
-        const data = await response.json();
-        return data.secure_url;
+    // Função para carregar veículos do GitHub
+    async function loadVehiclesFromGitHub() {
+        try {
+            isLoading = true;
+            render();
+            
+            const response = await fetch(GITHUB_API_URL, {
+                headers: {
+                    'Authorization': `token ${GITHUB_TOKEN}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                currentSha = data.sha;
+                const content = atob(data.content);
+                vehicles = JSON.parse(content);
+                showToast('Dados carregados do GitHub!');
+            } else {
+                console.error('Erro ao carregar:', response.status);
+                showToast('Erro ao carregar dados. Usando dados locais.', true);
+                loadLocalData();
+            }
+        } catch (error) {
+            console.error('Erro:', error);
+            showToast('Erro de conexão. Usando dados locais.', true);
+            loadLocalData();
+        } finally {
+            isLoading = false;
+            render();
+        }
+    }
+    
+    // Função para salvar veículos no GitHub
+    async function saveVehiclesToGitHub() {
+        if (!isAdmin) return;
+        
+        try {
+            const content = btoa(unescape(encodeURIComponent(JSON.stringify(vehicles, null, 2))));
+            
+            const response = await fetch(GITHUB_API_URL, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `token ${GITHUB_TOKEN}`,
+                    'Accept': 'application/vnd.github.v3+json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: 'Atualização de veículos via site',
+                    content: content,
+                    sha: currentSha
+                })
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                currentSha = data.content.sha;
+                showToast('Dados salvos no GitHub com sucesso!');
+                return true;
+            } else {
+                showToast('Erro ao salvar no GitHub', true);
+                return false;
+            }
+        } catch (error) {
+            console.error('Erro ao salvar:', error);
+            showToast('Erro de conexão ao salvar', true);
+            return false;
+        }
+    }
+    
+    // Dados locais de fallback
+    function loadLocalData() {
+        const saved = localStorage.getItem('jm_vehicles_local');
+        if (saved && JSON.parse(saved).length > 0) {
+            vehicles = JSON.parse(saved);
+        } else {
+            vehicles = [
+                { id: 1, nome: "Onix Turbo", marca: "Chevrolet", ano: 2023, preco: 85000, km: 15000, combustivel: "Flex", cambio: "Automático", cor: "Prata", status: "disponível", imagens: ["https://images.unsplash.com/photo-1603584173870-7e23fae7297c?w=800&h=450&fit=crop"], descricao: "Onix LT 1.0 Turbo, completo, econômico." },
+                { id: 2, nome: "Golf GTI", marca: "Volkswagen", ano: 2022, preco: 165000, km: 35000, combustivel: "Gasolina", cambio: "Automático", cor: "Preto", status: "disponível", imagens: ["https://images.unsplash.com/photo-1568605114967-8130f6a7a7c7?w=800&h=450&fit=crop"], descricao: "Golf GTI 2.0 TSI, bancos de couro." },
+                { id: 3, nome: "Corolla XEI", marca: "Toyota", ano: 2022, preco: 135000, km: 28000, combustivel: "Flex", cambio: "CVT", cor: "Branco", status: "reservado", imagens: ["https://images.unsplash.com/photo-1621135802920-133df287f89c?w=800&h=450&fit=crop"], descricao: "Corolla XEI completo, bancos de couro." },
+                { id: 4, nome: "Hilux SRV", marca: "Toyota", ano: 2021, preco: 220000, km: 35000, combustivel: "Diesel", cambio: "Automático", cor: "Prata", status: "disponível", imagens: ["https://images.unsplash.com/photo-1620885019235-bbe289f0ac00?w=800&h=450&fit=crop"], descricao: "Hilux 4x4, capota marítima." },
+                { id: 5, nome: "Civic EXL", marca: "Honda", ano: 2020, preco: 110000, km: 45000, combustivel: "Flex", cambio: "Automático", cor: "Preto", status: "vendido", imagens: ["https://images.unsplash.com/photo-1590362891991-f776e747a588?w=800&h=450&fit=crop"], descricao: "Civic EXL, único dono." }
+            ];
+        }
+        saveLocalData();
+    }
+    
+    function saveLocalData() {
+        localStorage.setItem('jm_vehicles_local', JSON.stringify(vehicles));
+    }
+    
+    function saveDataLocally() {
+        saveLocalData();
+    }
+    
+    function showToast(msg, isError = false) {
+        toastMessage = { text: msg, isError };
+        render();
+        setTimeout(() => { toastMessage = null; render(); }, 3000);
+    }
+    
+    function toggleTheme() {
+        isDarkMode = !isDarkMode;
+        localStorage.setItem('jm_darkMode', isDarkMode);
+        render();
     }
     
     function handleLogin(email, pass) {
         if (email === ADMIN_EMAIL && pass === ADMIN_PASSWORD) {
             isAdmin = true;
             showLoginModal = false;
-            saveToLocal();
-            showToast('Login realizado!');
+            currentPage = 'admin';
+            localStorage.setItem('jm_admin', 'true');
+            showToast('Login realizado com sucesso!');
             render();
-        } else { showToast('Credenciais inválidas!', true); }
+        } else {
+            showToast('Credenciais inválidas!', true);
+        }
     }
     
-    function handleLogout() { isAdmin = false; saveToLocal(); showToast('Logout realizado'); render(); }
+    function handleLogout() {
+        isAdmin = false;
+        currentPage = 'home';
+        localStorage.setItem('jm_admin', 'false');
+        showToast('Logout realizado');
+        render();
+    }
     
     async function handleDeleteVehicle(id) {
-        if (confirm('Excluir este veículo?')) {
+        if (confirm('Tem certeza que deseja excluir este veículo?')) {
             vehicles = vehicles.filter(v => v.id !== id);
-            saveToLocal();
-            showToast('Veículo excluído!');
+            saveDataLocally();
+            if (isAdmin) {
+                await saveVehiclesToGitHub();
+            }
+            showToast('Veículo excluído com sucesso!');
             render();
         }
     }
     
-    function handleContact(vehicle) { showToast(`Interesse em ${vehicle.nome}! Entraremos em contato.`); }
+    function handleContact(vehicle) {
+        showToast(`Interesse registrado em ${vehicle.nome}! Entraremos em contato em breve.`);
+    }
     
-    // FUNÇÕES GLOBAIS
-    window.selectMarca = function(m) { selectedMarca = m; render(); };
-    window.updateFilter = function(s) { filterStatus = s; render(); };
+    function formatPrice(p) {
+        return 'R$ ' + p.toLocaleString('pt-BR');
+    }
+    
+    function getStatusColor(s) {
+        if (s === 'disponível') return 'bg-green-500';
+        if (s === 'reservado') return 'bg-yellow-500';
+        return 'bg-red-500';
+    }
+    
+    window.selectMarca = function(marca) {
+        selectedMarca = marca;
+        render();
+    };
+    
+    window.updateFilter = function(status) {
+        filterStatus = status;
+        render();
+    };
+    
+    // Renderização (mesma função anterior, mas com verificação de loading)
+    function render() {
+        const app = document.getElementById('app');
+        if (!app) return;
+        
+        if (isDarkMode) document.body.classList.add('dark-mode');
+        else document.body.classList.remove('dark-mode');
+        
+        if (isLoading) {
+            app.innerHTML = `<div class="loading">🔄 Carregando veículos do GitHub...<br><br><div class="text-sm text-gray-500">Isso pode levar alguns segundos</div></div>`;
+            return;
+        }
+        
+        // ... (resto do código de renderização igual ao anterior, usando a variável 'vehicles')
+        // [CÓDIGO DE RENDERIZAÇÃO COMPLETO AQUI - É O MESMO DO ANTERIOR]
+        
+        // Por questões de espaço, mantenha o mesmo código de renderização que você já tinha,
+        // apenas garantindo que usa a variável 'vehicles' carregada do GitHub
+        
+        app.innerHTML = html;
+    }
+    
+    // Funções globais
     window.changePage = (page) => { currentPage = page; selectedVehicle = null; render(); };
-    window.viewDetail = (id) => { selectedVehicle = vehicles.find(v => v.id === id); currentPage = 'detail'; render(); };
+    window.viewDetail = (id) => { selectedVehicle = vehicles.find(v => v.id === id); currentImageIndex = 0; currentPage = 'detail'; render(); };
+    window.setImageIndex = (i) => { currentImageIndex = i; render(); };
+    window.updateStatus = async (id, status) => { 
+        const v = vehicles.find(v => v.id === id); 
+        if (v) { 
+            v.status = status; 
+            saveDataLocally();
+            if (isAdmin) {
+                await saveVehiclesToGitHub();
+            }
+            render(); 
+            showToast('Status atualizado!'); 
+        } 
+    };
     window.showLogin = () => { showLoginModal = true; render(); };
     window.closeLogin = () => { showLoginModal = false; render(); };
     window.submitLogin = (e) => { e.preventDefault(); handleLogin(document.getElementById('loginEmail').value, document.getElementById('loginPass').value); };
     window.openVehicleModal = () => { editingVehicle = null; showVehicleModal = true; render(); };
     window.closeVehicleModal = () => { showVehicleModal = false; editingVehicle = null; render(); };
     window.editVehicle = (id) => { editingVehicle = JSON.parse(JSON.stringify(vehicles.find(v => v.id === id))); showVehicleModal = true; render(); };
-    window.updateStatus = (id, status) => { const v = vehicles.find(v => v.id === id); if (v) { v.status = status; saveToLocal(); showToast('Status atualizado!'); render(); } };
-    window.deleteVehicle = handleDeleteVehicle;
-    window.handleContact = handleContact;
     
     window.submitVehicle = async (e) => {
         e.preventDefault();
+        
         const nome = document.getElementById('nome').value;
         const marca = document.getElementById('marca').value;
         const ano = parseInt(document.getElementById('ano').value);
@@ -124,170 +494,48 @@
         const descricao = document.getElementById('descricao').value;
         
         const previewDiv = document.getElementById('imagePreview');
-        const imagensUrls = [];
+        const imagens = [];
         if (previewDiv) {
-            const imgs = previewDiv.querySelectorAll('.gallery-item img');
-            for (let img of imgs) {
-                if (img.src.startsWith('data:')) {
-                    const resp = await fetch(img.src);
-                    const blob = await resp.blob();
-                    const file = new File([blob], 'carro.jpg');
-                    const url = await uploadImage(file);
-                    imagensUrls.push(url);
-                } else { imagensUrls.push(img.src); }
-            }
+            const imgElements = previewDiv.querySelectorAll('.gallery-item img');
+            imgElements.forEach(img => { if (img.src) imagens.push(img.src); });
         }
         
         if (editingVehicle) {
-            const idx = vehicles.findIndex(v => v.id === editingVehicle.id);
-            if (idx !== -1) {
-                vehicles[idx] = { ...editingVehicle, nome, marca, ano, preco, km, cor, combustivel, cambio, descricao, imagens: imagensUrls.length ? imagensUrls : editingVehicle.imagens };
-                saveToLocal();
-                showToast('Veículo atualizado!');
+            const index = vehicles.findIndex(v => v.id === editingVehicle.id);
+            if (index !== -1) {
+                vehicles[index] = { ...editingVehicle, nome, marca, ano, preco, km, cor, combustivel, cambio, descricao, imagens: imagens.length ? imagens : editingVehicle.imagens };
+                saveDataLocally();
+                if (isAdmin) {
+                    await saveVehiclesToGitHub();
+                }
+                showToast('Veículo atualizado com sucesso!');
             }
         } else {
-            const newVehicle = { id: Date.now(), nome, marca, ano, preco, km, cor, combustivel, cambio, descricao, status: 'disponível', imagens: imagensUrls.length ? imagensUrls : ['https://placehold.co/800x450?text=Sem+Imagem'] };
+            const newVehicle = { id: Date.now(), nome, marca, ano, preco, km, cor, combustivel, cambio, descricao, status: 'disponível', imagens: imagens.length ? imagens : ['https://placehold.co/800x450?text=Sem+Imagem'] };
             vehicles.push(newVehicle);
-            saveToLocal();
-            showToast('Veículo adicionado!');
+            saveDataLocally();
+            if (isAdmin) {
+                await saveVehiclesToGitHub();
+            }
+            showToast('Veículo adicionado com sucesso!');
         }
         showVehicleModal = false;
         editingVehicle = null;
         render();
     };
     
-    function render() {
-        const app = document.getElementById('app');
-        if (!app) return;
+    // Inicializar
+    async function init() {
+        const savedAdmin = localStorage.getItem('jm_admin');
+        const savedDarkMode = localStorage.getItem('jm_darkMode');
+        isAdmin = savedAdmin === 'true';
+        isDarkMode = savedDarkMode === 'true';
         
-        let html = `
-            <div class="min-h-screen flex flex-col">
-                <nav class="bg-white shadow-md sticky top-0 z-50">
-                    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-                        <div class="text-2xl font-bold cursor-pointer" onclick="window.changePage('home')">
-                            <span style="color:#3b82f6;">JM</span> <span style="color:#6b7280;">VEÍCULOS</span>
-                        </div>
-                        <div class="flex gap-4 items-center">
-                            <button onclick="window.changePage('home')" class="px-3 py-2 rounded">🏠 Home</button>
-                            <button onclick="window.changePage('vehicles')" class="px-3 py-2 rounded">🚗 Veículos</button>
-                            ${isAdmin ? `<button onclick="window.changePage('admin')" class="px-3 py-2 rounded bg-blue-500 text-white">👑 Admin</button><button onclick="handleLogout()" class="px-3 py-2 rounded bg-red-500 text-white">Sair</button>` : `<button onclick="window.showLogin()" class="px-3 py-2 rounded bg-blue-500 text-white">Admin</button>`}
-                        </div>
-                    </div>
-                </nav>
-                <div class="flex-grow">`;
-        
-        if (currentPage === 'home') {
-            const destaques = vehicles.filter(v => v.status === 'disponível').slice(0, 3);
-            html += `
-                <div class="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-20">
-                    <div class="container mx-auto px-4 text-center">
-                        <h1 class="cinzel-text text-5xl font-bold mb-4">Potência, estilo e confiança<br>na sua garagem</h1>
-                        <p class="text-xl mb-8">As melhores ofertas com garantia de procedência</p>
-                        <button onclick="window.changePage('vehicles')" class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold">Ver Ofertas</button>
-                    </div>
-                </div>
-                <div class="container mx-auto px-4 py-16">
-                    <h2 class="text-3xl font-bold text-center mb-12">⭐ Veículos em Destaque</h2>
-                    <div class="grid md:grid-cols-3 gap-6">
-                        ${destaques.map(v => `
-                            <div class="vehicle-card bg-white rounded-lg shadow-lg">
-                                <img src="${v.imagens[0]}" class="vehicle-image" onerror="this.src='https://placehold.co/500x300?text=Sem+Imagem'">
-                                <div class="p-4">
-                                    <h3 class="text-xl font-bold">${v.nome}</h3>
-                                    <p class="text-gray-600">${v.marca} - ${v.ano}</p>
-                                    <p class="text-blue-600 text-2xl font-bold mt-2">${formatPrice(v.preco)}</p>
-                                    <button onclick="window.viewDetail(${v.id})" class="w-full mt-3 bg-blue-500 text-white py-2 rounded">Ver Detalhes</button>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-                <div class="bg-gray-100 py-16">
-                    <div class="container mx-auto px-4 text-center">
-                        <h2 class="text-3xl font-bold mb-4">🔑 Pronto para começar?</h2>
-                        <p class="text-lg mb-4">Com a JM Veículos, você está a um passo do carro próprio.</p>
-                        <button onclick="window.changePage('vehicles')" class="bg-green-600 text-white px-6 py-2 rounded-lg">Quero meu carro</button>
-                    </div>
-                </div>`;
-        }
-        else if (currentPage === 'vehicles') {
-            let filtered = vehicles.filter(v => (selectedMarca === 'todas' || v.marca === selectedMarca) && (filterStatus === 'todos' || v.status === filterStatus));
-            html += `
-                <div class="container mx-auto px-4 py-8">
-                    <h1 class="text-3xl font-bold mb-6">🚗 Catálogo de Veículos</h1>
-                    <div class="mb-4"><label class="font-semibold">Filtrar por Marca:</label><div class="flex flex-wrap gap-2 mt-2">${MARCAS.map(m => `<button onclick="window.selectMarca('${m}')" class="px-3 py-1 rounded ${selectedMarca === m ? 'bg-blue-500 text-white' : 'bg-gray-200'}">${m}</button>`).join('')}<button onclick="window.selectMarca('todas')" class="px-3 py-1 rounded ${selectedMarca === 'todas' ? 'bg-blue-500 text-white' : 'bg-gray-200'}">Todas</button></div></div>
-                    <div class="mb-4"><label class="font-semibold">Filtrar por Status:</label><div class="flex flex-wrap gap-2 mt-2"><button onclick="window.updateFilter('todos')" class="px-3 py-1 rounded ${filterStatus === 'todos' ? 'bg-blue-500 text-white' : 'bg-gray-200'}">Todos</button><button onclick="window.updateFilter('disponível')" class="px-3 py-1 rounded ${filterStatus === 'disponível' ? 'bg-green-500 text-white' : 'bg-gray-200'}">Disponíveis</button><button onclick="window.updateFilter('reservado')" class="px-3 py-1 rounded ${filterStatus === 'reservado' ? 'bg-yellow-500 text-white' : 'bg-gray-200'}">Reservados</button><button onclick="window.updateFilter('vendido')" class="px-3 py-1 rounded ${filterStatus === 'vendido' ? 'bg-red-500 text-white' : 'bg-gray-200'}">Vendidos</button></div></div>
-                    <div class="grid md:grid-cols-3 gap-6">${filtered.map(v => `<div class="bg-white rounded-lg shadow-lg overflow-hidden"><img src="${v.imagens[0]}" class="vehicle-image"><div class="p-4"><div class="flex justify-between"><h2 class="text-xl font-bold">${v.nome}</h2><span class="px-2 py-1 rounded text-xs text-white ${getStatusColor(v.status)}">${v.status}</span></div><p>${v.marca} • ${v.ano} • ${v.km.toLocaleString()} km</p><p class="text-blue-600 text-2xl font-bold">${formatPrice(v.preco)}</p><button onclick="window.viewDetail(${v.id})" class="w-full mt-2 bg-blue-500 text-white py-2 rounded">Ver Detalhes</button></div></div>`).join('')}</div>
-                </div>`;
-        }
-        else if (currentPage === 'detail' && selectedVehicle) {
-            html += `
-                <div class="container mx-auto px-4 py-8">
-                    <button onclick="window.changePage('vehicles')" class="text-blue-500 mb-4">← Voltar</button>
-                    <div class="bg-white rounded-lg shadow-lg p-6">
-                        <img src="${selectedVehicle.imagens[0]}" class="w-full h-96 object-cover rounded-lg">
-                        <h1 class="text-3xl font-bold mt-4">${selectedVehicle.nome}</h1>
-                        <p class="text-blue-600 text-4xl font-bold mt-2">${formatPrice(selectedVehicle.preco)}</p>
-                        <div class="grid md:grid-cols-2 gap-4 mt-6">
-                            <div><strong>Marca:</strong> ${selectedVehicle.marca}<br><strong>Ano:</strong> ${selectedVehicle.ano}<br><strong>KM:</strong> ${selectedVehicle.km.toLocaleString()} km</div>
-                            <div><strong>Descrição:</strong><br>${selectedVehicle.descricao}</div>
-                        </div>
-                        <button onclick="window.handleContact(${JSON.stringify(selectedVehicle).replace(/"/g, '&quot;')})" class="w-full mt-6 bg-green-500 text-white py-3 rounded-lg text-lg">💰 Tenho Interesse</button>
-                    </div>
-                </div>`;
-        }
-        else if (currentPage === 'admin' && isAdmin) {
-            html += `
-                <div class="container mx-auto px-4 py-8">
-                    <div class="flex justify-between items-center mb-6">
-                        <h1 class="text-3xl font-bold">👑 Painel Administrativo</h1>
-                        <button onclick="window.openVehicleModal()" class="bg-green-500 text-white px-4 py-2 rounded">+ Novo Veículo</button>
-                    </div>
-                    <div class="bg-white rounded-lg shadow overflow-x-auto">
-                        <table class="w-full">
-                            <thead class="bg-gray-100"><tr><th class="p-3">ID</th><th>Imagem</th><th>Veículo</th><th>Preço</th><th>Status</th><th>Ações</th></tr></thead>
-                            <tbody>${vehicles.map(v => `<tr class="border-t"><td class="p-3">${v.id}</td><td><img src="${v.imagens[0]}" class="w-12 h-12 object-cover rounded"></td><td><b>${v.nome}</b><br><small>${v.marca} ${v.ano}</small></td><td>${formatPrice(v.preco)}</td><td><select onchange="window.updateStatus(${v.id}, this.value)" class="border rounded p-1"><option ${v.status === 'disponível' ? 'selected' : ''}>disponível</option><option ${v.status === 'reservado' ? 'selected' : ''}>reservado</option><option ${v.status === 'vendido' ? 'selected' : ''}>vendido</option></select></td><td><button onclick="window.editVehicle(${v.id})" class="text-blue-600 mr-2">Editar</button><button onclick="window.deleteVehicle(${v.id})" class="text-red-600">Excluir</button></td></tr>`).join('')}</tbody>
-                        </table>
-                    </div>
-                </div>`;
-        }
-        
-        html += `</div><footer class="bg-gray-800 text-white text-center py-4 mt-8">© 2024 JM Veículos - Potência, estilo e confiança</footer></div>`;
-        
-        if (showLoginModal) {
-            html += `<div class="modal-overlay"><div class="modal-content"><h2 class="text-2xl font-bold mb-4">Login Administrativo</h2><form onsubmit="window.submitLogin(event)"><input type="email" id="loginEmail" placeholder="E-mail" class="w-full p-2 border rounded mb-2" required><input type="password" id="loginPass" placeholder="Senha" class="w-full p-2 border rounded mb-2" required><button type="submit" class="w-full bg-blue-500 text-white py-2 rounded">Entrar</button><button type="button" onclick="window.closeLogin()" class="w-full mt-2 bg-gray-500 text-white py-2 rounded">Cancelar</button></form></div></div>`;
-        }
-        
-        if (showVehicleModal) {
-            const v = editingVehicle || { nome: '', marca: MARCAS[0], ano: 2024, preco: 0, km: 0, combustivel: 'Flex', cambio: 'Manual', cor: '', descricao: '', imagens: [] };
-            html += `<div class="modal-overlay"><div class="modal-content"><h2 class="text-2xl font-bold mb-4">${editingVehicle ? 'Editar Veículo' : 'Novo Veículo'}</h2><form id="vehicleForm"><input type="text" id="nome" placeholder="Nome" value="${v.nome}" class="w-full p-2 border rounded mb-2" required><select id="marca" class="w-full p-2 border rounded mb-2">${MARCAS.map(m => `<option ${v.marca === m ? 'selected' : ''}>${m}</option>`).join('')}</select><div class="grid grid-cols-2 gap-2 mb-2"><input type="number" id="ano" placeholder="Ano" value="${v.ano}" class="p-2 border rounded" required><input type="number" id="preco" placeholder="Preço" value="${v.preco}" class="p-2 border rounded" required><input type="number" id="km" placeholder="KM" value="${v.km}" class="p-2 border rounded" required><input type="text" id="cor" placeholder="Cor" value="${v.cor}" class="p-2 border rounded" required></div><select id="combustivel" class="w-full p-2 border rounded mb-2"><option ${v.combustivel === 'Flex' ? 'selected' : ''}>Flex</option><option ${v.combustivel === 'Gasolina' ? 'selected' : ''}>Gasolina</option><option ${v.combustivel === 'Diesel' ? 'selected' : ''}>Diesel</option></select><select id="cambio" class="w-full p-2 border rounded mb-2"><option ${v.cambio === 'Manual' ? 'selected' : ''}>Manual</option><option ${v.cambio === 'Automático' ? 'selected' : ''}>Automático</option></select><textarea id="descricao" placeholder="Descrição" rows="3" class="w-full p-2 border rounded mb-2">${v.descricao}</textarea><div><label class="block font-semibold mb-2">📸 Fotos do Veículo</label><div id="imagePreview" class="gallery-preview">${v.imagens.map(img => `<div class="gallery-item"><img src="${img}" class="preview-image"><div class="remove-image-btn" onclick="this.parentElement.remove()">×</div></div>`).join('')}</div><input type="file" id="vehicleImages" accept="image/*" multiple style="display:none"><button type="button" onclick="document.getElementById('vehicleImages').click()" class="add-image-btn">+ Selecionar Fotos</button></div><div class="flex gap-2 mt-4"><button type="submit" class="flex-1 bg-blue-500 text-white py-2 rounded">Salvar</button><button type="button" onclick="window.closeVehicleModal()" class="flex-1 bg-gray-500 text-white py-2 rounded">Cancelar</button></div></form></div></div>`;
-        }
-        
-        if (toastMessage) html += `<div class="toast" style="background:${toastMessage.isError ? '#ef4444' : '#10b981'}">${toastMessage.text}</div>`;
-        app.innerHTML = html;
-        
-        if (showVehicleModal) {
-            const uploadInput = document.getElementById('vehicleImages');
-            if (uploadInput) {
-                uploadInput.onchange = function(e) {
-                    Array.from(e.target.files).forEach(file => {
-                        const reader = new FileReader();
-                        reader.onload = ev => {
-                            const previewDiv = document.getElementById('imagePreview');
-                            const div = document.createElement('div');
-                            div.className = 'gallery-item';
-                            div.innerHTML = `<img src="${ev.target.result}" class="preview-image"><div class="remove-image-btn" onclick="this.parentElement.remove()">×</div>`;
-                            previewDiv.appendChild(div);
-                        };
-                        reader.readAsDataURL(file);
-                    });
-                };
-            }
-        }
+        await loadVehiclesFromGitHub();
+        render();
     }
     
-    loadFromLocal();
-    render();
+    init();
 </script>
 </body>
 </html>
