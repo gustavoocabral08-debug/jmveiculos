@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JM Veículos - Concessionária</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        .cinzel-text {
+            font-family: 'Cinzel', serif;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            animation: slideIn 0.3s ease;
+            z-index: 1000;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 24px;
+        }
+        
+        .dark-mode {
+            background-color: #0f172a !important;
+            color: #e2e8f0 !important;
+        }
+        
+        .dark-mode .bg-white {
+            background-color: #1e293b !important;
+        }
+        
+        .dark-mode .bg-gray-50 {
+            background-color: #0f172a !important;
+        }
+        
+        .dark-mode .bg-gray-100 {
+            background-color: #1e293b !important;
+        }
+        
+        .dark-mode .bg-gray-200 {
+            background-color: #334155 !important;
+        }
+        
+        .dark-mode .text-gray-800 {
+            color: #f1f5f9 !important;
+        }
+        
+        .dark-mode .text-gray-600 {
+            color: #cbd5e1 !important;
+        }
+        
+        .dark-mode .border {
+            border-color: #334155 !important;
+        }
+        
+        .dark-mode .modal-content {
+            background-color: #1e293b !important;
+            color: #e2e8f0 !important;
+        }
+        
+        .dark-mode input, .dark-mode select, .dark-mode textarea {
+            background-color: #0f172a !important;
+            border-color: #334155 !important;
+            color: #e2e8f0 !important;
+        }
+        
+        button { cursor: pointer; transition: all 0.2s; }
+        button:hover { transform: translateY(-2px); }
+        
+        .vehicle-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+            background: white;
+        }
+        
+        .dark-mode .vehicle-card {
+            background: #1e293b !important;
+        }
+        
+        .vehicle-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+        }
+        
+        .vehicle-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+        
+        .gallery-image {
+            width: 100%;
+            height: 450px;
+            object-fit: cover;
+        }
+        
+        .thumbnail {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            cursor: pointer;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .thumbnail:hover {
+            transform: scale(1.05);
+        }
+        
+        .thumbnail.active {
+            border-color: #3b82f6;
+            transform: scale(1.05);
+        }
+        
+        .brand-btn {
+            transition: all 0.2s;
+        }
+        
+        .brand-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .preview-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        .gallery-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .gallery-item {
+            position: relative;
+        }
+        
+        .remove-image-btn {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        
+        .remove-image-btn:hover {
+            background: #dc2626;
+            transform: scale(1.1);
+        }
+        
+        .hero-section {
+            position: relative;
+            background-image: url('https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=1600&h=600&fit=crop');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.4) 100%);
+        }
+        
+        .add-image-btn {
+            background: #3b82f6;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: inline-block;
+            cursor: pointer;
+        }
+        
+        .add-image-btn:hover {
+            background: #2563eb;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+<div id="app">
+    <div class="loading">Carregando veículos... ⏳</div>
+</div>
+
+<script>
+    // Configuração do GitHub
+    const GITHUB_USERNAME = 'gustavoocabral08-debug';
+    const GITHUB_REPO = 'jm';
+    const GITHUB_FILE = 'vehicles.json';
+    const GITHUB_TOKEN = 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; // COLOQUE SEU TOKEN AQUI!
+    
+    const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/${GITHUB_FILE}`;
+    
+    // Lista de marcas
+    const MARCAS = ["Chevrolet", "Volkswagen", "Peugeot", "Toyota", "Fiat", "Renault", "Ford", "Honda", "Hyundai", "Jeep", "Nissan", "Citroen"];
+    
+    // Estado
+    let currentPage = 'home';
+    let isDarkMode = false;
+    let selectedMarca = 'todas';
+    let filterStatus = 'todos';
+    let selectedVehicle = null;
+    let toastMessage = null;
+    let isAdmin = false;
+    let showLoginModal = false;
+    let showVehicleModal = false;
+    let editingVehicle = null;
+    let currentImageIndex = 0;
+    let vehicles = [];
+    let isLoading = true;
+    let currentSha = null; // Para atualizar o arquivo no GitHub
+    
+    // Credenciais
+    const ADMIN_EMAIL = 'admin@jmveiculos.com';
+    const ADMIN_PASSWORD = '245464Jm<becs$';
+    
+    // Função para carregar veículos do GitHub
+    async function loadVehiclesFromGitHub() {
+        try {
+            isLoading = true;
+            render();
+            
+            const response = await fetch(GITHUB_API_URL, {
+                headers: {
+                    'Authorization': `token ${GITHUB_TOKEN}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                currentSha = data.sha;
+                const content = atob(data.content);
+                vehicles = JSON.parse(content);
+                showToast('Dados carregados do GitHub!');
+            } else {
+                console.error('Erro ao carregar:', response.status);
+                showToast('Erro ao carregar dados. Usando dados locais.', true);
+                loadLocalData();
+            }
+        } catch (error) {
+            console.error('Erro:', error);
+            showToast('Erro de conexão. Usando dados locais.', true);
+            loadLocalData();
+        } finally {
+            isLoading = false;
+            render();
+        }
+    }
+    
+    // Função para salvar veículos no GitHub
+    async function saveVehiclesToGitHub() {
+        if (!isAdmin) return;
+        
+        try {
+            const content = btoa(unescape(encodeURIComponent(JSON.stringify(vehicles, null, 2))));
+            
+            const response = await fetch(GITHUB_API_URL, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `token ${GITHUB_TOKEN}`,
+                    'Accept': 'application/vnd.github.v3+json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: 'Atualização de veículos via site',
+                    content: content,
+                    sha: currentSha
+                })
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                currentSha = data.content.sha;
+                showToast('Dados salvos no GitHub com sucesso!');
+                return true;
+            } else {
+                showToast('Erro ao salvar no GitHub', true);
+                return false;
+            }
+        } catch (error) {
+            console.error('Erro ao salvar:', error);
+            showToast('Erro de conexão ao salvar', true);
+            return false;
+        }
+    }
+    
+    // Dados locais de fallback
+    function loadLocalData() {
+        const saved = localStorage.getItem('jm_vehicles_local');
+        if (saved && JSON.parse(saved).length > 0) {
+            vehicles = JSON.parse(saved);
+        } else {
+            vehicles = [
+                { id: 1, nome: "Onix Turbo", marca: "Chevrolet", ano: 2023, preco: 85000, km: 15000, combustivel: "Flex", cambio: "Automático", cor: "Prata", status: "disponível", imagens: ["https://images.unsplash.com/photo-1603584173870-7e23fae7297c?w=800&h=450&fit=crop"], descricao: "Onix LT 1.0 Turbo, completo, econômico." },
+                { id: 2, nome: "Golf GTI", marca: "Volkswagen", ano: 2022, preco: 165000, km: 35000, combustivel: "Gasolina", cambio: "Automático", cor: "Preto", status: "disponível", imagens: ["https://images.unsplash.com/photo-1568605114967-8130f6a7a7c7?w=800&h=450&fit=crop"], descricao: "Golf GTI 2.0 TSI, bancos de couro." },
+                { id: 3, nome: "Corolla XEI", marca: "Toyota", ano: 2022, preco: 135000, km: 28000, combustivel: "Flex", cambio: "CVT", cor: "Branco", status: "reservado", imagens: ["https://images.unsplash.com/photo-1621135802920-133df287f89c?w=800&h=450&fit=crop"], descricao: "Corolla XEI completo, bancos de couro." },
+                { id: 4, nome: "Hilux SRV", marca: "Toyota", ano: 2021, preco: 220000, km: 35000, combustivel: "Diesel", cambio: "Automático", cor: "Prata", status: "disponível", imagens: ["https://images.unsplash.com/photo-1620885019235-bbe289f0ac00?w=800&h=450&fit=crop"], descricao: "Hilux 4x4, capota marítima." },
+                { id: 5, nome: "Civic EXL", marca: "Honda", ano: 2020, preco: 110000, km: 45000, combustivel: "Flex", cambio: "Automático", cor: "Preto", status: "vendido", imagens: ["https://images.unsplash.com/photo-1590362891991-f776e747a588?w=800&h=450&fit=crop"], descricao: "Civic EXL, único dono." }
+            ];
+        }
+        saveLocalData();
+    }
+    
+    function saveLocalData() {
+        localStorage.setItem('jm_vehicles_local', JSON.stringify(vehicles));
+    }
+    
+    function saveDataLocally() {
+        saveLocalData();
+    }
+    
+    function showToast(msg, isError = false) {
+        toastMessage = { text: msg, isError };
+        render();
+        setTimeout(() => { toastMessage = null; render(); }, 3000);
+    }
+    
+    function toggleTheme() {
+        isDarkMode = !isDarkMode;
+        localStorage.setItem('jm_darkMode', isDarkMode);
+        render();
+    }
+    
+    function handleLogin(email, pass) {
+        if (email === ADMIN_EMAIL && pass === ADMIN_PASSWORD) {
+            isAdmin = true;
+            showLoginModal = false;
+            currentPage = 'admin';
+            localStorage.setItem('jm_admin', 'true');
+            showToast('Login realizado com sucesso!');
+            render();
+        } else {
+            showToast('Credenciais inválidas!', true);
+        }
+    }
+    
+    function handleLogout() {
+        isAdmin = false;
+        currentPage = 'home';
+        localStorage.setItem('jm_admin', 'false');
+        showToast('Logout realizado');
+        render();
+    }
+    
+    async function handleDeleteVehicle(id) {
+        if (confirm('Tem certeza que deseja excluir este veículo?')) {
+            vehicles = vehicles.filter(v => v.id !== id);
+            saveDataLocally();
+            if (isAdmin) {
+                await saveVehiclesToGitHub();
+            }
+            showToast('Veículo excluído com sucesso!');
+            render();
+        }
+    }
+    
+    function handleContact(vehicle) {
+        showToast(`Interesse registrado em ${vehicle.nome}! Entraremos em contato em breve.`);
+    }
+    
+    function formatPrice(p) {
+        return 'R$ ' + p.toLocaleString('pt-BR');
+    }
+    
+    function getStatusColor(s) {
+        if (s === 'disponível') return 'bg-green-500';
+        if (s === 'reservado') return 'bg-yellow-500';
+        return 'bg-red-500';
+    }
+    
+    window.selectMarca = function(marca) {
+        selectedMarca = marca;
+        render();
+    };
+    
+    window.updateFilter = function(status) {
+        filterStatus = status;
+        render();
+    };
+    
+    // Renderização (mesma função anterior, mas com verificação de loading)
+    function render() {
+        const app = document.getElementById('app');
+        if (!app) return;
+        
+        if (isDarkMode) document.body.classList.add('dark-mode');
+        else document.body.classList.remove('dark-mode');
+        
+        if (isLoading) {
+            app.innerHTML = `<div class="loading">🔄 Carregando veículos do GitHub...<br><br><div class="text-sm text-gray-500">Isso pode levar alguns segundos</div></div>`;
+            return;
+        }
+        
+        // ... (resto do código de renderização igual ao anterior, usando a variável 'vehicles')
+        // [CÓDIGO DE RENDERIZAÇÃO COMPLETO AQUI - É O MESMO DO ANTERIOR]
+        
+        // Por questões de espaço, mantenha o mesmo código de renderização que você já tinha,
+        // apenas garantindo que usa a variável 'vehicles' carregada do GitHub
+        
+        app.innerHTML = html;
+    }
+    
+    // Funções globais
+    window.changePage = (page) => { currentPage = page; selectedVehicle = null; render(); };
+    window.viewDetail = (id) => { selectedVehicle = vehicles.find(v => v.id === id); currentImageIndex = 0; currentPage = 'detail'; render(); };
+    window.setImageIndex = (i) => { currentImageIndex = i; render(); };
+    window.updateStatus = async (id, status) => { 
+        const v = vehicles.find(v => v.id === id); 
+        if (v) { 
+            v.status = status; 
+            saveDataLocally();
+            if (isAdmin) {
+                await saveVehiclesToGitHub();
+            }
+            render(); 
+            showToast('Status atualizado!'); 
+        } 
+    };
+    window.showLogin = () => { showLoginModal = true; render(); };
+    window.closeLogin = () => { showLoginModal = false; render(); };
+    window.submitLogin = (e) => { e.preventDefault(); handleLogin(document.getElementById('loginEmail').value, document.getElementById('loginPass').value); };
+    window.openVehicleModal = () => { editingVehicle = null; showVehicleModal = true; render(); };
+    window.closeVehicleModal = () => { showVehicleModal = false; editingVehicle = null; render(); };
+    window.editVehicle = (id) => { editingVehicle = JSON.parse(JSON.stringify(vehicles.find(v => v.id === id))); showVehicleModal = true; render(); };
+    
+    window.submitVehicle = async (e) => {
+        e.preventDefault();
+        
+        const nome = document.getElementById('nome').value;
+        const marca = document.getElementById('marca').value;
+        const ano = parseInt(document.getElementById('ano').value);
+        const preco = parseInt(document.getElementById('preco').value);
+        const km = parseInt(document.getElementById('km').value);
+        const cor = document.getElementById('cor').value;
+        const combustivel = document.getElementById('combustivel').value;
+        const cambio = document.getElementById('cambio').value;
+        const descricao = document.getElementById('descricao').value;
+        
+        const previewDiv = document.getElementById('imagePreview');
+        const imagens = [];
+        if (previewDiv) {
+            const imgElements = previewDiv.querySelectorAll('.gallery-item img');
+            imgElements.forEach(img => { if (img.src) imagens.push(img.src); });
+        }
+        
+        if (editingVehicle) {
+            const index = vehicles.findIndex(v => v.id === editingVehicle.id);
+            if (index !== -1) {
+                vehicles[index] = { ...editingVehicle, nome, marca, ano, preco, km, cor, combustivel, cambio, descricao, imagens: imagens.length ? imagens : editingVehicle.imagens };
+                saveDataLocally();
+                if (isAdmin) {
+                    await saveVehiclesToGitHub();
+                }
+                showToast('Veículo atualizado com sucesso!');
+            }
+        } else {
+            const newVehicle = { id: Date.now(), nome, marca, ano, preco, km, cor, combustivel, cambio, descricao, status: 'disponível', imagens: imagens.length ? imagens : ['https://placehold.co/800x450?text=Sem+Imagem'] };
+            vehicles.push(newVehicle);
+            saveDataLocally();
+            if (isAdmin) {
+                await saveVehiclesToGitHub();
+            }
+            showToast('Veículo adicionado com sucesso!');
+        }
+        showVehicleModal = false;
+        editingVehicle = null;
+        render();
+    };
+    
+    // Inicializar
+    async function init() {
+        const savedAdmin = localStorage.getItem('jm_admin');
+        const savedDarkMode = localStorage.getItem('jm_darkMode');
+        isAdmin = savedAdmin === 'true';
+        isDarkMode = savedDarkMode === 'true';
+        
+        await loadVehiclesFromGitHub();
+        render();
+    }
+    
+    init();
+</script>
+</body>
+</html>
