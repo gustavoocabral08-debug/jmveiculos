@@ -13,9 +13,6 @@
         @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
         .modal-content { background: white; border-radius: 12px; max-width: 600px; width: 90%; padding: 24px; max-height: 80vh; overflow-y: auto; }
-        .dark-mode { background-color: #0f172a !important; color: #e2e8f0 !important; }
-        .dark-mode .bg-white { background-color: #1e293b !important; }
-        .dark-mode .modal-content { background-color: #1e293b !important; }
         button { cursor: pointer; transition: all 0.2s; }
         button:hover { transform: translateY(-2px); }
         .vehicle-card { transition: 0.3s; background: white; border-radius: 12px; overflow: hidden; }
@@ -39,17 +36,16 @@
     const ADMIN_EMAIL = 'admin@jmveiculos.com';
     const ADMIN_PASSWORD = '245464Jm<becs$';
     
-    // MARCAS DISPONÍVEIS
+    // MARCAS
     const MARCAS = ["Chevrolet", "Volkswagen", "Peugeot", "Toyota", "Fiat", "Renault", "Ford", "Honda", "Hyundai", "Jeep", "Nissan", "Citroen"];
     
     // DADOS DOS VEÍCULOS
     let vehicles = [
         { id: 1, nome: "Onix Turbo", marca: "Chevrolet", ano: 2023, preco: 85000, km: 15000, combustivel: "Flex", cambio: "Automático", cor: "Prata", status: "disponível", imagens: ["https://images.unsplash.com/photo-1603584173870-7e23fae7297c?w=800&h=450&fit=crop"], descricao: "Onix LT 1.0 Turbo, completo, econômico." },
-        { id: 2, nome: "Golf GTI", marca: "Volkswagen", ano: 2022, preco: 165000, km: 35000, combustivel: "Gasolina", cambio: "Automático", cor: "Preto", status: "disponível", imagens: ["https://images.unsplash.com/photo-1568605114967-8130f6a7a7c7?w=800&h=450&fit=crop"], descricao: "Golf GTI 2.0 TSI, bancos de couro." },
-        { id: 3, nome: "Corolla XEI", marca: "Toyota", ano: 2022, preco: 135000, km: 28000, combustivel: "Flex", cambio: "CVT", cor: "Branco", status: "reservado", imagens: ["https://images.unsplash.com/photo-1621135802920-133df287f89c?w=800&h=450&fit=crop"], descricao: "Corolla XEI completo, bancos de couro." }
+        { id: 2, nome: "Golf GTI", marca: "Volkswagen", ano: 2022, preco: 165000, km: 35000, combustivel: "Gasolina", cambio: "Automático", cor: "Preto", status: "disponível", imagens: ["https://images.unsplash.com/photo-1568605114967-8130f6a7a7c7?w=800&h=450&fit=crop"], descricao: "Golf GTI 2.0 TSI, bancos de couro." }
     ];
     
-    // ESTADO DO SISTEMA
+    // ESTADO
     let currentPage = 'home';
     let selectedVehicle = null;
     let isAdmin = false;
@@ -59,17 +55,15 @@
     let toastMessage = null;
     let selectedMarca = 'todas';
     let filterStatus = 'todos';
-    let isDarkMode = false;
-    let currentImageIndex = 0;
     
-    // FUNÇÕES AUXILIARES
-    function saveToLocal() { localStorage.setItem('jm_vehicles', JSON.stringify(vehicles)); localStorage.setItem('jm_admin', isAdmin); localStorage.setItem('jm_darkMode', isDarkMode); }
-    function loadFromLocal() { const saved = localStorage.getItem('jm_vehicles'); if (saved) vehicles = JSON.parse(saved); isAdmin = localStorage.getItem('jm_admin') === 'true'; isDarkMode = localStorage.getItem('jm_darkMode') === 'true'; }
+    // FUNÇÕES
+    function saveToLocal() { localStorage.setItem('jm_vehicles', JSON.stringify(vehicles)); localStorage.setItem('jm_admin', isAdmin); }
+    function loadFromLocal() { const saved = localStorage.getItem('jm_vehicles'); if (saved) vehicles = JSON.parse(saved); isAdmin = localStorage.getItem('jm_admin') === 'true'; }
     function showToast(msg, isError = false) { toastMessage = { text: msg, isError }; render(); setTimeout(() => { toastMessage = null; render(); }, 3000); }
     function formatPrice(p) { return 'R$ ' + p.toLocaleString('pt-BR'); }
     function getStatusColor(s) { return s === 'disponível' ? 'bg-green-500' : s === 'reservado' ? 'bg-yellow-500' : 'bg-red-500'; }
     
-    // UPLOAD DE IMAGEM PARA CLOUDINARY
+    // UPLOAD
     async function uploadImage(file) {
         const formData = new FormData();
         formData.append('file', file);
@@ -79,7 +73,6 @@
         return data.secure_url;
     }
     
-    // LOGIN/LOGOUT
     function handleLogin(email, pass) {
         if (email === ADMIN_EMAIL && pass === ADMIN_PASSWORD) {
             isAdmin = true;
@@ -89,9 +82,9 @@
             render();
         } else { showToast('Credenciais inválidas!', true); }
     }
+    
     function handleLogout() { isAdmin = false; saveToLocal(); showToast('Logout realizado'); render(); }
     
-    // CRUD DE VEÍCULOS
     async function handleDeleteVehicle(id) {
         if (confirm('Excluir este veículo?')) {
             vehicles = vehicles.filter(v => v.id !== id);
@@ -100,16 +93,14 @@
             render();
         }
     }
+    
     function handleContact(vehicle) { showToast(`Interesse em ${vehicle.nome}! Entraremos em contato.`); }
     
-    // FILTROS
+    // FUNÇÕES GLOBAIS
     window.selectMarca = function(m) { selectedMarca = m; render(); };
     window.updateFilter = function(s) { filterStatus = s; render(); };
-    window.toggleTheme = function() { isDarkMode = !isDarkMode; saveToLocal(); render(); };
-    
-    // NAVEGAÇÃO
     window.changePage = (page) => { currentPage = page; selectedVehicle = null; render(); };
-    window.viewDetail = (id) => { selectedVehicle = vehicles.find(v => v.id === id); currentImageIndex = 0; currentPage = 'detail'; render(); };
+    window.viewDetail = (id) => { selectedVehicle = vehicles.find(v => v.id === id); currentPage = 'detail'; render(); };
     window.showLogin = () => { showLoginModal = true; render(); };
     window.closeLogin = () => { showLoginModal = false; render(); };
     window.submitLogin = (e) => { e.preventDefault(); handleLogin(document.getElementById('loginEmail').value, document.getElementById('loginPass').value); };
@@ -117,8 +108,9 @@
     window.closeVehicleModal = () => { showVehicleModal = false; editingVehicle = null; render(); };
     window.editVehicle = (id) => { editingVehicle = JSON.parse(JSON.stringify(vehicles.find(v => v.id === id))); showVehicleModal = true; render(); };
     window.updateStatus = (id, status) => { const v = vehicles.find(v => v.id === id); if (v) { v.status = status; saveToLocal(); showToast('Status atualizado!'); render(); } };
+    window.deleteVehicle = handleDeleteVehicle;
+    window.handleContact = handleContact;
     
-    // SUBMIT DO FORMULÁRIO DE VEÍCULO
     window.submitVehicle = async (e) => {
         e.preventDefault();
         const nome = document.getElementById('nome').value;
@@ -164,11 +156,9 @@
         render();
     };
     
-    // RENDERIZAÇÃO PRINCIPAL
     function render() {
         const app = document.getElementById('app');
         if (!app) return;
-        if (isDarkMode) document.body.classList.add('dark-mode'); else document.body.classList.remove('dark-mode');
         
         let html = `
             <div class="min-h-screen flex flex-col">
@@ -181,13 +171,11 @@
                             <button onclick="window.changePage('home')" class="px-3 py-2 rounded">🏠 Home</button>
                             <button onclick="window.changePage('vehicles')" class="px-3 py-2 rounded">🚗 Veículos</button>
                             ${isAdmin ? `<button onclick="window.changePage('admin')" class="px-3 py-2 rounded bg-blue-500 text-white">👑 Admin</button><button onclick="handleLogout()" class="px-3 py-2 rounded bg-red-500 text-white">Sair</button>` : `<button onclick="window.showLogin()" class="px-3 py-2 rounded bg-blue-500 text-white">Admin</button>`}
-                            <button onclick="window.toggleTheme()" class="px-3 py-2 rounded">${isDarkMode ? '☀️' : '🌙'}</button>
                         </div>
                     </div>
                 </nav>
                 <div class="flex-grow">`;
         
-        // PÁGINA HOME
         if (currentPage === 'home') {
             const destaques = vehicles.filter(v => v.status === 'disponível').slice(0, 3);
             html += `
@@ -222,7 +210,6 @@
                     </div>
                 </div>`;
         }
-        // PÁGINA DE VEÍCULOS
         else if (currentPage === 'vehicles') {
             let filtered = vehicles.filter(v => (selectedMarca === 'todas' || v.marca === selectedMarca) && (filterStatus === 'todos' || v.status === filterStatus));
             html += `
@@ -233,7 +220,6 @@
                     <div class="grid md:grid-cols-3 gap-6">${filtered.map(v => `<div class="bg-white rounded-lg shadow-lg overflow-hidden"><img src="${v.imagens[0]}" class="vehicle-image"><div class="p-4"><div class="flex justify-between"><h2 class="text-xl font-bold">${v.nome}</h2><span class="px-2 py-1 rounded text-xs text-white ${getStatusColor(v.status)}">${v.status}</span></div><p>${v.marca} • ${v.ano} • ${v.km.toLocaleString()} km</p><p class="text-blue-600 text-2xl font-bold">${formatPrice(v.preco)}</p><button onclick="window.viewDetail(${v.id})" class="w-full mt-2 bg-blue-500 text-white py-2 rounded">Ver Detalhes</button></div></div>`).join('')}</div>
                 </div>`;
         }
-        // PÁGINA DE DETALHES
         else if (currentPage === 'detail' && selectedVehicle) {
             html += `
                 <div class="container mx-auto px-4 py-8">
@@ -250,7 +236,6 @@
                     </div>
                 </div>`;
         }
-        // PÁGINA ADMIN
         else if (currentPage === 'admin' && isAdmin) {
             html += `
                 <div class="container mx-auto px-4 py-8">
@@ -269,12 +254,10 @@
         
         html += `</div><footer class="bg-gray-800 text-white text-center py-4 mt-8">© 2024 JM Veículos - Potência, estilo e confiança</footer></div>`;
         
-        // MODAL DE LOGIN
         if (showLoginModal) {
             html += `<div class="modal-overlay"><div class="modal-content"><h2 class="text-2xl font-bold mb-4">Login Administrativo</h2><form onsubmit="window.submitLogin(event)"><input type="email" id="loginEmail" placeholder="E-mail" class="w-full p-2 border rounded mb-2" required><input type="password" id="loginPass" placeholder="Senha" class="w-full p-2 border rounded mb-2" required><button type="submit" class="w-full bg-blue-500 text-white py-2 rounded">Entrar</button><button type="button" onclick="window.closeLogin()" class="w-full mt-2 bg-gray-500 text-white py-2 rounded">Cancelar</button></form></div></div>`;
         }
         
-        // MODAL DE VEÍCULO
         if (showVehicleModal) {
             const v = editingVehicle || { nome: '', marca: MARCAS[0], ano: 2024, preco: 0, km: 0, combustivel: 'Flex', cambio: 'Manual', cor: '', descricao: '', imagens: [] };
             html += `<div class="modal-overlay"><div class="modal-content"><h2 class="text-2xl font-bold mb-4">${editingVehicle ? 'Editar Veículo' : 'Novo Veículo'}</h2><form id="vehicleForm"><input type="text" id="nome" placeholder="Nome" value="${v.nome}" class="w-full p-2 border rounded mb-2" required><select id="marca" class="w-full p-2 border rounded mb-2">${MARCAS.map(m => `<option ${v.marca === m ? 'selected' : ''}>${m}</option>`).join('')}</select><div class="grid grid-cols-2 gap-2 mb-2"><input type="number" id="ano" placeholder="Ano" value="${v.ano}" class="p-2 border rounded" required><input type="number" id="preco" placeholder="Preço" value="${v.preco}" class="p-2 border rounded" required><input type="number" id="km" placeholder="KM" value="${v.km}" class="p-2 border rounded" required><input type="text" id="cor" placeholder="Cor" value="${v.cor}" class="p-2 border rounded" required></div><select id="combustivel" class="w-full p-2 border rounded mb-2"><option ${v.combustivel === 'Flex' ? 'selected' : ''}>Flex</option><option ${v.combustivel === 'Gasolina' ? 'selected' : ''}>Gasolina</option><option ${v.combustivel === 'Diesel' ? 'selected' : ''}>Diesel</option></select><select id="cambio" class="w-full p-2 border rounded mb-2"><option ${v.cambio === 'Manual' ? 'selected' : ''}>Manual</option><option ${v.cambio === 'Automático' ? 'selected' : ''}>Automático</option></select><textarea id="descricao" placeholder="Descrição" rows="3" class="w-full p-2 border rounded mb-2">${v.descricao}</textarea><div><label class="block font-semibold mb-2">📸 Fotos do Veículo</label><div id="imagePreview" class="gallery-preview">${v.imagens.map(img => `<div class="gallery-item"><img src="${img}" class="preview-image"><div class="remove-image-btn" onclick="this.parentElement.remove()">×</div></div>`).join('')}</div><input type="file" id="vehicleImages" accept="image/*" multiple style="display:none"><button type="button" onclick="document.getElementById('vehicleImages').click()" class="add-image-btn">+ Selecionar Fotos</button></div><div class="flex gap-2 mt-4"><button type="submit" class="flex-1 bg-blue-500 text-white py-2 rounded">Salvar</button><button type="button" onclick="window.closeVehicleModal()" class="flex-1 bg-gray-500 text-white py-2 rounded">Cancelar</button></div></form></div></div>`;
@@ -283,7 +266,6 @@
         if (toastMessage) html += `<div class="toast" style="background:${toastMessage.isError ? '#ef4444' : '#10b981'}">${toastMessage.text}</div>`;
         app.innerHTML = html;
         
-        // CONFIGURAR UPLOAD DE IMAGENS
         if (showVehicleModal) {
             const uploadInput = document.getElementById('vehicleImages');
             if (uploadInput) {
@@ -303,9 +285,6 @@
             }
         }
     }
-    
-    window.deleteVehicle = handleDeleteVehicle;
-    window.handleContact = handleContact;
     
     loadFromLocal();
     render();
