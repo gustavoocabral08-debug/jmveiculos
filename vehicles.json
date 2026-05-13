@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "nome": "Onix Turbo",
+    "marca": "Chevrolet",
+    "ano": 2023,
+    "preco": 85000,
+    "km": 15000,
+    "combustivel": "Flex",
+    "cambio": "Automático",
+    "cor": "Prata",
+    "status": "disponível",
+    "imagens": ["https://images.unsplash.com/photo-1603584173870-7e23fae7297c?w=800&h=450&fit=crop"],
+    "descricao": "Onix LT 1.0 Turbo, completo, econômico."
+  }
+]
